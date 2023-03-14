@@ -1,0 +1,3 @@
+[submodule "targetlib"]
+	path = targetlib
+	url = git@github.com:tadeaustria/targetlib.git
