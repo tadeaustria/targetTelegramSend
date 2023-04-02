@@ -8,7 +8,7 @@ from pathlib import Path
 
 from targetlib.target import Target
 
-def main(receiver, coordinates, type, asLink, withTable, withTenth, allData, headline):
+def main(receiver, coordinates, type, asLink, withTable, withTenth, allData, headline, transparency):
     #Setup bot and get updates
     
     f = Path(__file__).with_name('token.txt').open("r")
@@ -51,6 +51,7 @@ def main(receiver, coordinates, type, asLink, withTable, withTenth, allData, hea
 
     #If message should be sent, then do so to the ID in the database
     if receiver:
+        receiver = receiver.upper()
         if receiver in user2messId:
             if asLink:
                 #Build up URL with given coordinates
@@ -77,7 +78,7 @@ def main(receiver, coordinates, type, asLink, withTable, withTenth, allData, hea
                     divisor = 2
 
 
-                target = Target(2048, 2048, len(coordinates) // divisor if withTable else 0 , type, headline)
+                target = Target(2048, 2048, len(coordinates) // divisor if withTable else 0 , type, headline, transparency)
                 for i in range(0, len(coordinates) // divisor):
                     try:
                         if allData:
@@ -102,7 +103,7 @@ def main(receiver, coordinates, type, asLink, withTable, withTenth, allData, hea
                     target.drawCenter()
 
                 #Send as photo
-                bot.send_photo(user2messId[receiver], target.getJpg())
+                bot.send_document(user2messId[receiver], target.getPicture())
                 print("Message to %s successfully sent" % receiver)
         else:
             print("%s is not in database" % receiver)
@@ -120,7 +121,8 @@ if __name__ == '__main__':
     parser.add_argument('-e', '--noTenth', dest='withTenth', help='Rings without tenth', default=True, action=argparse._StoreFalseAction)
     parser.add_argument('--allData', dest='allData', help='Pass ring value and teiler directly instead of math. Is ignored when using --asLink', default=False, action=argparse._StoreTrueAction)
     parser.add_argument('-l', '--headline', dest='headline', help='Optional header text that is printed on top of the picture. e.g. for serial number use', default=None)
+    parser.add_argument('--noTrans', dest='transparency', help='If true shots will be drawn with transparency', default=True, action=argparse._StoreFalseAction)
     parser.add_argument('data', type=float, help='Coordinates in pairs e.g. x1 y1 x2 y2 ... Means number of data arguments must be a multiple of two!' + \
         'If --allData flag is set Coordinates in pairs plus ring value and teiler e.g. x1 y1 t1 rv1 x2 y2 t2 rv2...', nargs='*')
     args = parser.parse_args()
-    main(args.target.upper(), args.data, args.type, args.asLink, args.withTable, args.withTenth, args.allData, args.headline)
+    main(args.target, args.data, args.type, args.asLink, args.withTable, args.withTenth, args.allData, args.headline, args.transparency)
