@@ -4,11 +4,12 @@
 import telegram as t
 import pickle
 import argparse
+import asyncio
 from pathlib import Path 
 
 from targetlib.target import Target
 
-def main(receiver, coordinates, type, asLink, withTable, withTenth, allData, headline, transparency):
+async def main(receiver, coordinates, type, asLink, withTable, withTenth, allData, headline, transparency):
     #Setup bot and get updates
     
     f = Path(__file__).with_name('token.txt').open("r")
@@ -18,7 +19,7 @@ def main(receiver, coordinates, type, asLink, withTable, withTenth, allData, hea
     token = f.read()
     f.close()
     bot = t.Bot(token=token)
-    updates = bot.get_updates(allowed_updates=[t.Update.MESSAGE], timeout=1, read_latency=5)
+    updates = await bot.get_updates(allowed_updates=[t.Update.MESSAGE], timeout=1)
 
     #Try open database or add a new empty one
     try:
@@ -34,15 +35,15 @@ def main(receiver, coordinates, type, asLink, withTable, withTenth, allData, hea
         for upd in updates:
             if upd.message.text == '/register':
                 user2messId[upd.message.from_user.full_name.upper()] = upd.message.chat.id
-                bot.sendMessage(upd.message.chat.id, "Erfolgreich registriert!")
+                await bot.sendMessage(upd.message.chat.id, "Erfolgreich registriert!")
             elif upd.message.text == '/unregister':
                 try:
                     del user2messId[upd.message.from_user.full_name.upper()]
-                    bot.sendMessage(upd.message.chat.id, "Erfolgreich abgemeldet!")
+                    await bot.sendMessage(upd.message.chat.id, "Erfolgreich abgemeldet!")
                 except KeyError:
-                    bot.sendMessage(upd.message.chat.id, "Doppelt abmelden hilft besser!")
+                    await bot.sendMessage(upd.message.chat.id, "Doppelt abmelden hilft besser!")
         #Set updates marked as read
-        updates = bot.get_updates(offset=upd.update_id+1,allowed_updates=[t.Update.MESSAGE])
+        updates = await bot.get_updates(offset=upd.update_id+1,allowed_updates=[t.Update.MESSAGE])
 
     #Write Username and ID to database
     f = Path(__file__).with_name("database.pkl").open("wb")
@@ -68,7 +69,7 @@ def main(receiver, coordinates, type, asLink, withTable, withTenth, allData, hea
                     message+="&tenth="
                 if not type:
                     message+="&type=%s" % type
-                bot.sendMessage(user2messId[receiver], message)                        
+                await bot.sendMessage(user2messId[receiver], message)
             else:
                 #Send as picture
                 #Setup picture
@@ -103,14 +104,13 @@ def main(receiver, coordinates, type, asLink, withTable, withTenth, allData, hea
                     target.drawCenter()
 
                 #Send as photo
-                bot.send_document(user2messId[receiver], target.getPicture())
+                await bot.send_document(user2messId[receiver], target.getPicture(), filename='result.png')
                 print("Message to %s successfully sent" % receiver)
         else:
             print("%s is not in database" % receiver)
     else:
         #Otherwise just print actual database entries
         print(user2messId)
-    
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
@@ -125,4 +125,4 @@ if __name__ == '__main__':
     parser.add_argument('data', type=float, help='Coordinates in pairs e.g. x1 y1 x2 y2 ... Means number of data arguments must be a multiple of two!' + \
         'If --allData flag is set Coordinates in pairs plus ring value and teiler e.g. x1 y1 t1 rv1 x2 y2 t2 rv2...', nargs='*')
     args = parser.parse_args()
-    main(args.target, args.data, args.type, args.asLink, args.withTable, args.withTenth, args.allData, args.headline, args.transparency)
+    asyncio.run(main(args.target, args.data, args.type, args.asLink, args.withTable, args.withTenth, args.allData, args.headline, args.transparency))
