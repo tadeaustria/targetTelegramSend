@@ -8,7 +8,7 @@ This script uses the [targetlib](https://github.com/tadeaustria/targetlib) to se
 * numpy
 * [pillow](https://pillow.readthedocs.io/en/stable/)
   
-```pip install -r pipinstall -r targetlib/pipinstall```
+```pip install --extra-index-url https://barthler.ddns.net/pyrepo/ -r pipinstall```
 
 This script further requires a `token.txt` in the working directory, that contains the API key for the bot. (**not included!**)
 

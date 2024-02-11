@@ -112,7 +112,7 @@ async def main(receiver, coordinates, type, asLink, withTable, withTenth, allDat
         #Otherwise just print actual database entries
         print(user2messId)
 
-if __name__ == '__main__':
+def run():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('target', help='Whom to be send', nargs='?', default=None)
     parser.add_argument('-t', '--type', help='Type (b - black, r - red, g - green)', default='b')
@@ -126,3 +126,6 @@ if __name__ == '__main__':
         'If --allData flag is set Coordinates in pairs plus ring value and teiler e.g. x1 y1 t1 rv1 x2 y2 t2 rv2...', nargs='*')
     args = parser.parse_args()
     asyncio.run(main(args.target, args.data, args.type, args.asLink, args.withTable, args.withTenth, args.allData, args.headline, args.transparency))
+    
+if __name__ == '__main__':
+    run()

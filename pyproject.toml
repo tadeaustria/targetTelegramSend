@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "updatetelegram"
+version = "1.0.0"
+authors = [
+  { name="Tade Barthler", email="tade_tirol@hotmail.com" },
+]
+description = "A telegram bot interface to send shooting target result pictures."
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = ["python-telegram-bot==20.7", "targetlib"]
+
+[project.urls]
+Homepage = "https://github.com/tadeaustria/target_lib"
+Issues = "https://github.com/tadeaustria/target_lib/issues"
+
+[project.scripts]
+updateTelegram = "updateTelegram:updateTelegram.run"
+
+[tool.setuptools]
+packages = ["updateTelegram"]
