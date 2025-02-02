@@ -7,7 +7,7 @@ import argparse
 import asyncio
 from pathlib import Path 
 
-from targetlib.target import Target
+from targetlib.targetlib.target import Target
 
 async def main(receiver, coordinates, type, asLink, withTable, withTenth, allData, headline, transparency):
     #Setup bot and get updates
