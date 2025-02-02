@@ -6,3 +6,4 @@ dist
 updatetelegram.egg-info
 
 .vscode/
+venv/

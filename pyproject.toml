@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "updatetelegram"
-version = "1.0.0"
+version = "2.0.0"
 authors = [
   { name="Tade Barthler", email="tade_tirol@hotmail.com" },
 ]
