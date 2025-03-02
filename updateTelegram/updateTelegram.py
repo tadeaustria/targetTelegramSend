@@ -6,8 +6,16 @@ import pickle
 import argparse
 import asyncio
 from pathlib import Path 
+from os.path import dirname, abspath, join
+import sys
 
-from targetlib.targetlib.target import Target
+# Find code directory relative to our directory
+THIS_DIR = dirname(__file__)
+CODE_DIR = abspath(join(THIS_DIR, 'targetlib'))
+sys.path.append(CODE_DIR)
+
+# Find either installed or local from src
+from targetlib.target import Target
 
 async def update():
         #Setup bot and get updates
